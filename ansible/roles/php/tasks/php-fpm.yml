@@ -1,0 +1,33 @@
+---
+- name: Set permissions on socket - owner
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?listen.owner' line='listen.owner = www-data'"
+
+- name: Listen on a port.
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?listen =' line='listen = 9010'"
+  notify: restart php7.0-fpm
+
+- name: Set max children
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?pm.max_children =' line='pm.max_children = 10'"
+  notify: restart php7.0-fpm
+
+- name: Set permissions on socket - group
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?listen.group' line='listen.group = www-data'"
+  notify: restart php7.0-fpm
+
+- name: Set permissions on socket - mode
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?listen.mode' line='listen.mode = 0660'"
+  notify: restart php7.0-fpm
+
+- name: ensure timezone is set in fpm php.ini
+  lineinfile: dest=/etc/php/7.0/fpm/php.ini
+              regexp='date.timezone ='
+              line='date.timezone = {{ server.timezone }}'
+  notify: restart php7.0-fpm
+- name: enabling opcache
+  lineinfile: dest=/etc/php/7.0/fpm/php.ini
+              regexp=';?opcache.enable=\d'
+              line='opcache.enable=1'
+  notify: restart php7.0-fpm
+
+- name: ensure php7.0-fpm is started
+  service: name=php7.0-fpm enabled=yes state=restarted

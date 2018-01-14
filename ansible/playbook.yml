@@ -1,0 +1,17 @@
+---
+- hosts: web
+  become: yes
+  become_method: sudo
+  vars_files:
+    - vars/all.yml
+  roles:
+    - nginx_proxy
+
+- hosts: application
+  become: yes
+  become_method: sudo
+  vars_files:
+    - vars/all.yml
+  roles:
+    - nginx
+    - php

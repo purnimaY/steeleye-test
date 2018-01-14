@@ -1,0 +1,5 @@
+[web]
+192.168.56.93 ansible_user=vagrant ansible_ssh_pass=vagrant
+
+[application]
+192.168.56.9[1:2] ansible_user=vagrant ansible_ssh_pass=vagrant
